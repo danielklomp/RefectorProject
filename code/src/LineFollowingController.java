@@ -83,8 +83,16 @@ public class LineFollowingController implements SensorListener{
 				else {
 					new_left_black=false;
 					accelLeft = 1;
-					
-					if(!isBlackHistory()){
+
+					//refactor Inline
+					boolean result;
+					if(old_left_black && (old_right_black && (new_left_black && new_right_black))){
+						result = true;
+                    }else{
+						result = false;
+                    }
+
+					if(!result){
 						right_speed = max_speed/2;
 						left_speed = max_speed/2;
 					}
@@ -110,8 +118,16 @@ public class LineFollowingController implements SensorListener{
 				else {
 					new_right_black=false;
 					accelRight = 1;
-					
-					if(!isBlackHistory()){
+
+					//refactor Inline
+					boolean result;
+					if(old_left_black && (old_right_black && (new_left_black && new_right_black))){
+						result = true;
+                    }else{
+						result = false;
+                    }
+
+					if(!result){
 						right_speed = max_speed/2;
 						left_speed = max_speed/2;
 					}
@@ -146,16 +162,7 @@ public class LineFollowingController implements SensorListener{
 			return false;
 		}
 	}
-	
-	public boolean isBlackHistory(){
-		if(old_left_black && (old_right_black && (new_left_black && new_right_black))){
-			return true;
-		}else{
-			return false;
-		}
-		
-	}
-	
+
 	/**
 	 * Removes the permission to do its task
 	 */

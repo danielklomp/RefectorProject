@@ -5,6 +5,11 @@ import lejos.robotics.navigation.DifferentialPilot;
 
 public class Main {
 
+	//refactor: Extract Constant
+	public static final DifferentialPilot DP = new DifferentialPilot(Config.WHEEL_DIAMETER, Config.TRACK_WIDTH, Motor.A, Motor.B);
+	//refactor: Extract Field
+	private static LineFollowingController lfc;
+
 	public static void main(String[] args) {
 		SensorHandler sh = new SensorHandler(Config.LIGHT_INTERVAL);
 		SensorHandler uh = new SensorHandler(Config.ULTRA_INTERVAL);
@@ -12,14 +17,14 @@ public class Main {
 		UpdatingLightSensor uls = new UpdatingLightSensor();
 		UpdatingColorSensor ucs = new UpdatingColorSensor();
 
-		DifferentialPilot dp = new DifferentialPilot(Config.WHEEL_DIAMETER, Config.TRACK_WIDTH, Motor.A, Motor.B);
+		DifferentialPilot DP = DP;
 
-		LineFollowingController lfc = new LineFollowingController(dp, ucs, uls);
-		ObstacleAvoidanceController oac = new ObstacleAvoidanceController(dp, lfc, uus, ucs, uls);
+		lfc = new LineFollowingController(DP, ucs, uls);
+		ObstacleAvoidanceController oac = new ObstacleAvoidanceControllerBuilder().setPilot(DP).setLineFollower(lfc).setSonicSensor(uus).setColorSensor(ucs).setLightSensor(uls).createObstacleAvoidanceController();
 
 
 		CalibrationController cc = new CalibrationController();
-		cc.run(ucs, uls);
+	 	cc.run(ucs, uls);
 
 		//Finish setup
 		uh.addSensor(uus);
@@ -29,7 +34,7 @@ public class Main {
 		sh.start();
 		uh.start();
 
-		dp.setRotateSpeed(Config.MAX_SPEED/2);
+		DP.setRotateSpeed(Config.MAX_SPEED/2);
 		//dp.forward();
 		Motor.A.forward();
 		Motor.B.forward();

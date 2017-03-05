@@ -49,4 +49,14 @@ public class UpdatingUltrasonicSensor extends UltrasonicSensor implements Updati
 		}
 		value = now;
 	}
+
+	//Refactor move refactoring
+	public boolean isBlack(float value) {
+		if (value < Config.WHITE_BLACK_BORDER) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
