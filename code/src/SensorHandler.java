@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class SensorHandler extends Thread {
+public class SensorHandler extends Thread implements SensorHandlerInt {
 	
 	/**
 	 * @author Alexander Freeman, Jop van Buuren, Marc Kuijpers en Daniel Klomp
@@ -32,6 +32,7 @@ public class SensorHandler extends Thread {
 	/**
 	 * Starts the thread and constantly updates the sensors
 	 */
+	@Override
 	public void run() {
 		while (true) {
 			for (UpdatingSensor s: allSensors) {
@@ -50,6 +51,7 @@ public class SensorHandler extends Thread {
 	 * Adds a sensor to the list of sensors
 	 * @param sensor The sensor to be added
 	 */
+	@Override
 	public void addSensor(UpdatingSensor sensor) {
 		this.allSensors.add(sensor);
 	}

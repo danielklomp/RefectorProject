@@ -72,7 +72,8 @@ public class UpdatingColorSensor extends ColorSensor implements UpdatingSensor {
 	/** Updates the sensors state
 	 * 
 	 */
-	public void updateState() {
+	// Refector: Change signature
+	public boolean updateState() {
 		float now = (float) this.getLightValue();
 		if (now != value) {
 			for (SensorListener s : listeners) {
@@ -80,6 +81,7 @@ public class UpdatingColorSensor extends ColorSensor implements UpdatingSensor {
 			}
 		}
 		this.value = now;
+		return true;
 	}
 	
 }

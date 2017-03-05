@@ -68,7 +68,7 @@ public class ObstacleAvoidanceController implements SensorListener{
 					pilot.travel(-5);
 				}
 				
-				this.avoid(newValue);
+				this.avoid(newValue, this.notSeenBlack);
 			}
 		}
 		else {
@@ -98,17 +98,59 @@ public class ObstacleAvoidanceController implements SensorListener{
 	/**
 	 * Starts the obstacle avoidance procedure 
 	 */
-	private void avoid(float ob) {
-		
-		int object_distance = (int)ob;
-		int distance = 1000;
-		int rotated = 0;
-		int calculated_distance = 0;
-		
-		
+	//Refactor: extract parameter;
+	private void avoid(float ob, boolean notSeenBlack) {
+
+		//Refactor: Extract method Object
+		int rotated = new BeginValues((int) ob).invoke();
+
+
 		Sound.setVolume(100);
 		Sound.twoBeeps();
+
+		// Refector: Extract Method
+		rotated = RotateRobot(rotated);
+
+		rotated -= Config.FINAL_ROTATE;
+		pilot.rotate(-Config.FINAL_ROTATE);
+		pilot.setTravelSpeed(10);
+		Sound.beep();
 		
+		notSeenBlack = true;
+		
+		pilot.arc(30, 50, true);
+
+		while (pilot.isMoving() && this.notSeenBlack) {
+			Thread.yield();
+		}
+		
+		pilot.arc(13, 310, true);
+		
+		while(this.notSeenBlack) {
+			Thread.yield();
+		}
+		
+		pilot.travel(2);
+		pilot.setRotateSpeed(20);
+		pilot.rotate(-110);
+		
+		this.notSeenBlack = true;
+		pilot.rotate(360, true);
+		
+		while(this.notSeenBlack) {
+			Thread.yield();
+		}
+		
+		pilot.stop();
+		
+		
+		this.revokeControl();
+		this.lineFollower.grantControl();
+		
+	}
+
+	private int RotateRobot(int rotate) {
+		int distance;
 		do {
 			pilot.rotate(-Config.ROTATE_DIFF);
 			rotated -= Config.ROTATE_DIFF;
@@ -117,84 +159,10 @@ public class ObstacleAvoidanceController implements SensorListener{
 			//System.out.println(distance);
 		}
 		while(distance < Config.AVOID_DIST);
-		
-		rotated -= Config.FINAL_ROTATE;
-		pilot.rotate(-Config.FINAL_ROTATE);
-		pilot.setTravelSpeed(10);
-		Sound.beep();
-		
-		/*
-		calculated_distance = (int) (object_distance / Math.cos(Math.toRadians(rotated)));
-		//System.out.println("Calc_d: " + calculated_distance + ", Corner: " + rotated + ", Obj_d: " + object_distance + " Calc_cor: " + Math.cos(rotated));
-
-
-		pilot.travel(calculated_distance);
-		
-		pilot.rotate(-2* rotated);
-		
-		
-		do {
-			pilot.rotate(Config.ROTATE_DIFF);
-			distance = this.sonicSensor.getDistance();
-		}
-		while(distance < Config.SECOND_AVOID_DIST);
-		
-		
-		pilot.travel(travel_dist);
-		Sound.beep();
-		pilot.rotate(rotated);
-		
-		
-		
-		this.notSeenBlack = true;
-		
-		pilot.travel(Config.TRAVEL_DISTANCE*2, true);
-		
-		
-		
-		
-		pilot.stop();
-		pilot.travel(5);
-		pilot.rotate(10);
-		this.revokeControl();
-		this.lineFollower.grantControl();
-		
-		*/
-		
-		this.notSeenBlack = true;
-		
-		pilot.arc(30, 50, true);
-
-		while (pilot.isMoving() && notSeenBlack) {
-			Thread.yield();
-		}
-		
-		pilot.arc(13, 310, true);
-		
-		while(notSeenBlack) {
-			Thread.yield();
-		}
-		
-		pilot.travel(2);
-		pilot.setRotateSpeed(20);
-		pilot.rotate(-110);
-		
-		notSeenBlack = true;
-		pilot.rotate(360, true);
-		
-		while(notSeenBlack) {
-			Thread.yield();
-		}
-		
-		pilot.stop();
-		
-		
-		this.revokeControl();
-		this.lineFollower.grantControl();
-		
+		return rotated;
 	}
-	
-	
+
+
 	/**
 	 * Sets the controller to inactive
 	 */
@@ -202,4 +170,19 @@ public class ObstacleAvoidanceController implements SensorListener{
 		this.active = false;
 	}
 
+	private class BeginValues {
+		private int ob;
+
+		public BeginValues(int ob) {
+			this.ob = ob;
+		}
+
+		public int invoke() {
+			int object_distance = ob;
+			int distance = 1000;
+			int rotated = 0;
+			int calculated_distance = 0;
+			return rotated;
+		}
+	}
 }
