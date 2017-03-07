@@ -15,7 +15,8 @@ public class LineFollowingController implements SensorListener{
 	private UpdatingLightSensor lightSensor; ///< LightSensor, detects left side of the line.
 	
 	private boolean active; ///< State of lineFollowing controller when not active the Object avoidance controller is in control.
-	private boolean old_left_black, new_left_black; ///<  old and new left values for the left sensor (LightSensor).
+	private boolean old_left_black;
+	private boolean new_left_black; ///<  old and new left values for the left sensor (LightSensor).
 	private boolean old_right_black, new_right_black; ///< Stores old and new right (ColorSensor) values for the left sensor.
 	private float accelLeft, accelRight, accel_inc; ///< Stores corner acceleration for left and right wheel and the acceleration increase.
 	
