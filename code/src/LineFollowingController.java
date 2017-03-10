@@ -25,7 +25,7 @@ public class LineFollowingController implements SensorListener{
 	private int right_speed = max_speed/4; ///< Starting speed right wheel is 1/4 of maximum speed
 	private int left_speed = max_speed/4; ///< Starting speed left wheel is 1/4 of maximum speed
 	private int speed_increase = Config.SPEED_INCREASE; ///< Increase of speed when cornering (without acceleration)
-	private int speed_decrease = Config.SPEED_DECREASE; ///< Not is use speed decrease
+	private int speedDecrease = Config.SPEED_DECREASE; ///< Not is use speed decrease
 	private NXTRegulatedMotor motorRight = Config.MotorRight; ///< the right motor
 	private NXTRegulatedMotor motorLeft = Config.MotorLeft; /// the left motor
 	
