@@ -14,11 +14,11 @@ public class LineFollowingController implements SensorListener{
 	private UpdatingColorSensor colorSensor; ///< ColorSensor, detects right side of the line.
 	private UpdatingLightSensor lightSensor; ///< LightSensor, detects left side of the line.
 	
-	private boolean active; ///< State of lineFollowing controller when not active the Object avoidance controller is in control.
+	private boolean old_right_black;
 	private boolean oldLeftBlack;
 	private boolean newLeftBlack; ///<  old and new left values for the left sensor (LightSensor).
-	private boolean oldRightBlack, newRightBlack; ///< Stores old and new right (ColorSensor) values for the left sensor.
-	private float accelLeft, accelRight, accel_inc; ///< Stores corner acceleration for left and right wheel and the acceleration increase.
+  private boolean new_right_black; ///< Stores old and new right (ColorSensor) values for the left sensor.
+  private float accelLeft, accelRight, accel_inc; ///< Stores corner acceleration for left and right wheel and the acceleration increase.
 	
 	private final int whiteBlackBorder = Config.WHITE_BLACK_BORDER; ///< The value that determines if the sensor value is black or white
 	private int max_speed = Config.MAX_SPEED; ///< The maximum speed the motors can turn 
