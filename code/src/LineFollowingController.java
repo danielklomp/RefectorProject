@@ -14,17 +14,18 @@ public class LineFollowingController implements SensorListener{
 	private UpdatingColorSensor colorSensor; ///< ColorSensor, detects right side of the line.
 	private UpdatingLightSensor lightSensor; ///< LightSensor, detects left side of the line.
 	
-	private boolean active; ///< State of lineFollowing controller when not active the Object avoidance controller is in control.
-	private boolean old_left_black, new_left_black; ///<  old and new left values for the left sensor (LightSensor).
-	private boolean old_right_black, new_right_black; ///< Stores old and new right (ColorSensor) values for the left sensor.
-	private float accelLeft, accelRight, accel_inc; ///< Stores corner acceleration for left and right wheel and the acceleration increase.
+	private boolean old_right_black;
+	private boolean oldLeftBlack;
+	private boolean newLeftBlack; ///<  old and new left values for the left sensor (LightSensor).
+  private boolean new_right_black; ///< Stores old and new right (ColorSensor) values for the left sensor.
+  private float accelLeft, accelRight, accel_inc; ///< Stores corner acceleration for left and right wheel and the acceleration increase.
 	
 	private final int whiteBlackBorder = Config.WHITE_BLACK_BORDER; ///< The value that determines if the sensor value is black or white
 	private int max_speed = Config.MAX_SPEED; ///< The maximum speed the motors can turn 
 	private int right_speed = max_speed/4; ///< Starting speed right wheel is 1/4 of maximum speed
 	private int left_speed = max_speed/4; ///< Starting speed left wheel is 1/4 of maximum speed
 	private int speed_increase = Config.SPEED_INCREASE; ///< Increase of speed when cornering (without acceleration)
-	private int speed_decrease = Config.SPEED_DECREASE; ///< Not is use speed decrease
+	private int speedDecrease = Config.SPEED_DECREASE; ///< Not is use speed decrease
 	private NXTRegulatedMotor motorRight = Config.MotorRight; ///< the right motor
 	private NXTRegulatedMotor motorLeft = Config.MotorLeft; /// the left motor
 	
@@ -44,10 +45,10 @@ public class LineFollowingController implements SensorListener{
 		this.accelRight = 1;
 
 		this.accel_inc = Config.ACCEL_INC;
-		this.old_left_black = false;
-		this.old_right_black = false;
-		this.new_left_black = false;
-		this.new_right_black = false; 
+		this.oldLeftBlack = false;
+		this.oldRightBlack = false;
+		this.newLeftBlack = false;
+		this.newRightBlack = false;
 
 		
 		this.active = true;
@@ -68,12 +69,12 @@ public class LineFollowingController implements SensorListener{
 		if(this.active) {
 			if (sensor == colorSensor) {
 				if(isBlack(newValue)) {
-					new_left_black=true;
+					newLeftBlack =true;
 					left_speed += speed_increase;
 					left_speed *= accelLeft;
 					if(left_speed>max_speed){
 						left_speed = max_speed; 
-						if(!new_right_black){right_speed = 0;}
+						if(!newRightBlack){right_speed = 0;}
 					}
 					
 					if(isBlack(oldValue)){
@@ -81,12 +82,12 @@ public class LineFollowingController implements SensorListener{
 					}
 				}
 				else {
-					new_left_black=false;
+					newLeftBlack =false;
 					accelLeft = 1;
 
 					//refactor Inline
 					boolean result;
-					if(old_left_black && (old_right_black && (new_left_black && new_right_black))){
+					if(oldLeftBlack && (oldRightBlack && (newLeftBlack && newRightBlack))){
 						result = true;
                     }else{
 						result = false;
@@ -96,19 +97,19 @@ public class LineFollowingController implements SensorListener{
 						right_speed = max_speed/2;
 						left_speed = max_speed/2;
 					}
-					old_left_black = new_left_black;
+					oldLeftBlack = newLeftBlack;
 				}
 			}
 			
 			if (sensor == lightSensor) {
 				if(isBlack(newValue)) {
-					new_right_black=true;
+					newRightBlack =true;
 					right_speed += speed_increase;
 					right_speed *= accelRight;
 					
 					if(right_speed > max_speed){
 						right_speed = max_speed;
-						if(!new_left_black){left_speed = 0;}
+						if(!newLeftBlack){left_speed = 0;}
 					}
 					
 					if(isBlack(oldValue)){
@@ -116,12 +117,12 @@ public class LineFollowingController implements SensorListener{
 					}
 				}
 				else {
-					new_right_black=false;
+					newRightBlack =false;
 					accelRight = 1;
 
 					//refactor Inline
 					boolean result;
-					if(old_left_black && (old_right_black && (new_left_black && new_right_black))){
+					if(oldLeftBlack && (oldRightBlack && (newLeftBlack && newRightBlack))){
 						result = true;
                     }else{
 						result = false;
@@ -131,11 +132,11 @@ public class LineFollowingController implements SensorListener{
 						right_speed = max_speed/2;
 						left_speed = max_speed/2;
 					}
-					old_right_black = new_right_black;
+					oldRightBlack = newRightBlack;
 				}
 			}
 			
-			if(new_left_black && new_right_black){
+			if(newLeftBlack && newRightBlack){
 				right_speed = max_speed/8;
 				left_speed = max_speed/8;
 			}
